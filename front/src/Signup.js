@@ -14,7 +14,7 @@ function Signup() {
     dErrorMessage.hidden = true;
     event.preventDefault();
     const signUpRsponse = await fetch(
-      'http://localhost:8081/usuario/registrarse',
+      'https://juanpisarnedis.com:8081/usuario/registrarse',
       {
         method: 'post',
         body: JSON.stringify(signUpData),
