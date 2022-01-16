@@ -10,7 +10,7 @@ function usersRoute(app) {
 
   router.post('/iniciar_sesion', async (req, res, next) => {
     const userData = await loginServices.authUser(req.body);
-    if (!userData) {
+    if (!Object.values(userData).length) {
       res.json({login: false});
       return;
     }
@@ -26,7 +26,7 @@ function usersRoute(app) {
 
   router.post('/registrarse', async (req, res, next) => {
     const userData = await loginServices.registrate(req.body);
-    if (!userData) {
+    if (!Object.values(userData).length) {
       res.json({login: false});
       return;
     }
