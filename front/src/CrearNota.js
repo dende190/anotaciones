@@ -12,7 +12,7 @@ function Notes() {
   const handlerSubmit = async function(event) {
     event.preventDefault();
     const noteResponse = await fetch(
-      'http://juanpisarnedis.com:8081/nota/crear',
+      'https://api.juanpisarnedis.com/nota/crear',
       {
         method: 'post',
         body: JSON.stringify({noteData, token: localStorage.token}),

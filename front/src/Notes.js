@@ -12,7 +12,7 @@ function Notes() {
   const {userId} = useParams();
   useEffect(async () => {
     const userNotesData = await fetch(
-      'http://juanpisarnedis.com:8081/nota/obtener',
+      'https://api.juanpisarnedis.com/nota/obtener',
       {
         method: 'post',
         body: JSON.stringify({token: localStorage.token, userId}),
