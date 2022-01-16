@@ -13,7 +13,7 @@ function Login() {
     dErrorMessage.hidden = true;
     event.preventDefault();
     const loginRsponse = await fetch(
-      'https://juanpisarnedis.com:8081/usuario/iniciar_sesion',
+      'http://juanpisarnedis.com:8081/usuario/iniciar_sesion',
       {
         method: 'post',
         body: JSON.stringify(loginData),
