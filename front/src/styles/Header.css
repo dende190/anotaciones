@@ -1,0 +1,19 @@
+.header {
+  height: 45px;
+  text-align: end;
+  padding: 30px 30px 0 0;
+  background-color: rgba(187, 186, 186, 0.6);
+}
+
+.links {
+  margin-left: 30px;
+  text-decoration: none;
+  color: black;
+  display: inline;
+  cursor: pointer;
+}
+
+.links:hover {
+  text-decoration: underline;
+  color: #747474;
+}
