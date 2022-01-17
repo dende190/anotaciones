@@ -5,7 +5,7 @@ import Home from './Home';
 import Login from './Login';
 import Signup from './Signup';
 import Notes from './Notes';
-import CrearNota from './CrearNota';
+import CreateNote from './CreateNote';
 import reportWebVitals from './reportWebVitals';
 import './styles/global.css';
 
@@ -17,7 +17,7 @@ ReactDOM.render(
         <Route exact path="/iniciar_sesion" element={<Login />} />
         <Route exact path="/registrarse" element={<Signup />} />
         <Route exact path="/notas/:userId" element={<Notes />} />
-        <Route exact path="/crear_nota" element={<CrearNota />} />
+        <Route exact path="/crear_nota" element={<CreateNote />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

@@ -1,18 +1,21 @@
 import {Fragment, useState, useEffect} from 'react';
 import Header from './components/Header';
-import './styles/CrearNota.css'
+import Loader from './components/Loader';
+import './styles/CreateNote.css'
 import './styles/form.css'
 
-function Notes() {
+function CreateNote() {
   if (!localStorage.token) {
     window.location.href = '/iniciar_sesion';
   }
 
   const [noteData, setNoteData] = useState({});
+  const [loader, setLoader] = useState(false);
   const handlerSubmit = async function(event) {
     event.preventDefault();
+    setLoader(true);
     const noteResponse = await fetch(
-      'https://api.juanpisarnedis.com/nota/crear',
+      'http://localhost:8081/nota/crear',
       {
         method: 'post',
         body: JSON.stringify({noteData, token: localStorage.token}),
@@ -63,8 +66,12 @@ function Notes() {
           Crear nota
         </button>
       </form>
+      {
+        loader &&
+        <Loader />
+      }
     </Fragment>
   );
 }
 
-export default Notes;
+export default CreateNote;

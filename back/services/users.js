@@ -5,11 +5,27 @@ usersService = {
     const users = await mysqlLib.get(
       (
         'SELECT ' +
-          'id, ' +
-          'CONCAT(COALESCE(firstname, ""), " ", COALESCE(lastname, "")) name ' +
-        'FROM user ' +
+          'u.id, ' +
+          (
+            'CONCAT(' +
+              'COALESCE(u.firstname, ""), ' +
+              '" ", ' +
+              'COALESCE(u.lastname, "")' +
+            ') name, '
+          ) +
+          'COUNT(n.id) notesCount ' +
+        'FROM user u ' +
+        (
+          'LEFT JOIN ' +
+            'note n ON ' +
+            'n.user_id = u.id AND ' +
+            'n.created_on BETWEEN ' +
+              'DATE_FORMAT(NOW(), "%Y-%m-%d") AND ' +
+              'DATE_FORMAT(NOW() + INTERVAL 1 DAY, "%Y-%m-%d") '
+        ) +
         'WHERE ' +
-          'status = 1'
+          'u.status = 1 ' +
+        'GROUP BY u.id'
       )
     ).then(usersResult => usersResult)
     .catch(err => console.log(err));

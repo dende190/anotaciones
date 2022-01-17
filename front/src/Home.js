@@ -36,11 +36,19 @@ function Home() {
         <h2 className="title">Listado de usuarios</h2>
         <ul>
           {
-            usersList.map(user => (
-              <li className="user" key={user.id}>
-                <Link to={`notas/${user.id}`}>{user.name}</Link>
-              </li>
-            ))
+            usersList.map(user => {
+              return (
+                <li className="user" key={user.id}>
+                  <Link to={`notas/${user.id}`}>{user.name}</Link>
+                  <span className="new_note">
+                    {
+                      user.notesCount > 0 &&
+                      `(Tiene ${user.notesCount} nota nuevas hoy)`
+                    }
+                  </span>
+                </li>
+              )
+            })
           }
         </ul>
       </div>
