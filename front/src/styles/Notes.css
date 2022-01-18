@@ -5,6 +5,7 @@
 .content {
   width: 60%;
   margin: 0 auto;
+  white-space: pre-line;
 }
 
 .date {

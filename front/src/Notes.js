@@ -1,6 +1,7 @@
 import {Fragment, useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import Header from './components/Header';
+import Loader from './components/Loader';
 import './styles/Notes.css'
 
 function Notes() {
@@ -12,7 +13,7 @@ function Notes() {
   const {userId} = useParams();
   useEffect(async () => {
     const userNotesData = await fetch(
-      'https://api.juanpisarnedis.com/nota/obtener',
+      `${process.env.REACT_APP_URL_API}nota/obtener`,
       {
         method: 'post',
         body: JSON.stringify({token: localStorage.token, userId}),
@@ -30,27 +31,25 @@ function Notes() {
   }, []);
 
   return (
-    !userNotes.notes.length ?
-    <h3>Sin Notas</h3> :
-    (
-      <Fragment>
-        <Header />
-        <div>
-          <h1>Notas de {userNotes.userName}:</h1>
-          {
-            userNotes.notes.map(note => (
-              <div key={note.id}>
-                <h2 className="title">
-                  {note.title} <span className="date">{note.createdDate}</span>
-                </h2>
-                <p className="content">{note.content}</p>
-                <hr className="separator"/>
-              </div>
-            ))
-          }
-        </div>
-      </Fragment>
-    )
+    <Fragment>
+      <Header />
+      <div>
+        <h1>Notas de {userNotes.userName}:</h1>
+        {
+          !userNotes.notes.length ?
+          <Loader /> :
+          userNotes.notes.map(note => (
+            <div key={note.id}>
+              <h2 className="title">
+                {note.title} <span className="date">{note.createdDate}</span>
+              </h2>
+              <p className="content">{note.content}</p>
+              <hr className="separator"/>
+            </div>
+          ))
+        }
+      </div>
+    </Fragment>
   );
 }
 

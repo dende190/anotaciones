@@ -11,7 +11,7 @@ function Home() {
   const [usersList, setUsersList] = useState([]);
   useEffect(async () => {
     const users = await fetch(
-      'https://api.juanpisarnedis.com/usuario/obtener_listado',
+      `${process.env.REACT_APP_URL_API}usuario/obtener_listado`,
       {
         method: 'post',
         body: JSON.stringify({token: localStorage.token}),

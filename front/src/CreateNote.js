@@ -15,7 +15,7 @@ function CreateNote() {
     event.preventDefault();
     setLoader(true);
     const noteResponse = await fetch(
-      'https://api.juanpisarnedis.com/nota/crear',
+      `${process.env.REACT_APP_URL_API}nota/crear`,
       {
         method: 'post',
         body: JSON.stringify({noteData, token: localStorage.token}),
