@@ -2,6 +2,16 @@ const mysqlLib = require('../lib/mysql');
 
 usersService = {
   getAll: async function() {
+    const date = new Date();
+    const today = (
+      date.getFullYear() +
+      '-' +
+      (
+        date.getMonth() > 10 ?
+        (date.getMonth() + 1) :
+        '0' + (date.getMonth() + 1)) +
+      '-' + date.getDate()
+    );
     const users = await mysqlLib.get(
       (
         'SELECT ' +
@@ -19,14 +29,17 @@ usersService = {
           'LEFT JOIN ' +
             'note n ON ' +
             'n.user_id = u.id AND ' +
-            'n.created_on BETWEEN ' +
-              'DATE_FORMAT(NOW(), "%Y-%m-%d") AND ' +
-              'DATE_FORMAT(NOW() + INTERVAL 1 DAY, "%Y-%m-%d") '
+            'n.created_on > ? AND ' +
+            'n.created_on < ? '
         ) +
         'WHERE ' +
           'u.status = 1 ' +
         'GROUP BY u.id'
-      )
+      ),
+      [
+        (today + ' 00:00:00'),
+        (today + ' 23:59:59'),
+      ]
     ).then(usersResult => usersResult)
     .catch(err => console.log(err));
 
