@@ -1,4 +1,4 @@
-import {Fragment, useState, useEffect, useRef} from 'react';
+import {Fragment, useState, useEffect} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import Header from './components/Header';
 import Loader from './components/Loader';

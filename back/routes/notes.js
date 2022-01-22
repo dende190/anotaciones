@@ -30,16 +30,24 @@ function notesRoute(app) {
     const userData = jwt.decode(req.body.token);
     const userId = userData.id;
     const noteData = req.body.noteData;
-    const noteId = await (
-      notesService
-      .create(
-        userId,
-        noteData.title,
-        noteData.content,
-        noteData.imageName,
-        noteData.image
-      )
-    );
+    let noteId = 0;
+    try {
+      noteId = await (
+        notesService
+        .create(
+          userId,
+          noteData.title,
+          noteData.content,
+          noteData.imageName,
+          noteData.image
+        )
+      );
+    } catch (error) {
+      return res.status(400).send({
+         message: error,
+      });
+    }
+
     if (!noteId) {
       res.status(301).json({error: true});
       return;

@@ -1,4 +1,4 @@
-import {Fragment, useState, useEffect} from 'react';
+import {Fragment, useState, useEffect, useRef} from 'react';
 import Header from './components/Header';
 import Loader from './components/Loader';
 import './styles/CreateNote.css'
@@ -11,8 +11,10 @@ function CreateNote() {
 
   const [noteData, setNoteData] = useState({});
   const [loader, setLoader] = useState(false);
+  const errorMessage = useRef(null);
   const handlerSubmit = async function(event) {
     event.preventDefault();
+    errorMessage.current.hidden = true;
     setLoader(true);
     const noteResponse = await fetch(
       `${process.env.REACT_APP_URL_API}nota/crear`,
@@ -23,7 +25,16 @@ function CreateNote() {
           'Content-Type': 'application/json'
         },
       }
-    );
+    ).catch(err => manageError);
+
+    if (noteResponse.status === 400) {
+      manageError();
+      return;
+    }
+
+    if (!noteResponse) {
+      return;
+    }
 
     const noteResponseJson = await noteResponse.json();
     if (noteResponseJson.error) {
@@ -32,6 +43,15 @@ function CreateNote() {
 
     window.location.href = `/notas/${noteResponseJson.userId}`;
   };
+
+  const manageError = function() {
+    setLoader(false);
+    errorMessage.current.hidden = false;
+    errorMessage.current.textContent = (
+      'Error al cargar la nota, intentalo de nuevo'
+    );
+    return false
+  }
 
   const handlerChange = function(event) {
     const dInput = event.target;
@@ -87,6 +107,7 @@ function CreateNote() {
             onChange={handlerLoadImage}
           />
         </label>
+        <span hidden={true} ref={errorMessage} className="error"></span>
         <button className="button">
           Crear nota
         </button>

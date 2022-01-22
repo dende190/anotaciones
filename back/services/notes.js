@@ -45,9 +45,8 @@ notesService = {
       return 0;
     }
 
-    let imagePath = '';
     if (imageBase64) {
-      imagePath = await this.saveImage(imageName, imageBase64)
+      await this.saveImage(imageName, imageBase64)
     }
 
     const noteId = await mysqlLib.insert(
@@ -60,11 +59,8 @@ notesService = {
       'note'
     ).then(noteId => noteId)
     .catch(err => console.log(err));
-    if (!noteId) {
-      return 0;
-    }
 
-    return noteId;
+    return (noteId || 0);
   },
   saveImage: async function(imageName, imageBase64) {
     const matches = imageBase64.match(/^data:.+\/(.+);base64,(.*)$/);
