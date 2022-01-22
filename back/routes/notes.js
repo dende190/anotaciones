@@ -32,7 +32,13 @@ function notesRoute(app) {
     const noteData = req.body.noteData;
     const noteId = await (
       notesService
-      .create(noteData.title, noteData.content, userId)
+      .create(
+        userId,
+        noteData.title,
+        noteData.content,
+        noteData.imageName,
+        noteData.image
+      )
     );
     if (!noteId) {
       res.status(301).json({error: true});

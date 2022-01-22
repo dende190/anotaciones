@@ -1,11 +1,12 @@
 const mysqlLib = require('../lib/mysql');
+const fs = require('fs');
 
 notesService = {
   getOfUser: async function(userId) {
     if (!userId) {
       return [];
     }
-
+    const pathImage = (__dirname + '/../assets/images/');
     const notes = await mysqlLib.get(
       (
         'SELECT ' +
@@ -14,10 +15,11 @@ notesService = {
             '" ", ' +
             'COALESCE(u.lastname, "")' +
           ') userName, ' +
+          'DATE_FORMAT(n.created_on, "%Y-%m-%d") createdDate, ' +
           'n.id, ' +
           'n.title, ' +
           'n.content, ' +
-          'DATE_FORMAT(n.created_on, "%Y-%m-%d") createdDate ' +
+          'n.image_name imageName ' +
         'FROM note n ' +
         'JOIN user u ON u.id = n.user_id ' +
         'WHERE ' +
@@ -32,9 +34,20 @@ notesService = {
 
     return notes;
   },
-  create: async function(title, content, userId) {
-    if (!title || !content || !userId) {
+  create: async function(
+    userId,
+    title,
+    content,
+    imageName,
+    imageBase64 = null
+  ) {
+    if (!userId || !title || !content) {
       return 0;
+    }
+
+    let imagePath = '';
+    if (imageBase64) {
+      imagePath = await this.saveImage(imageName, imageBase64)
     }
 
     const noteId = await mysqlLib.insert(
@@ -42,6 +55,7 @@ notesService = {
         title: title,
         content: content,
         user_id: userId,
+        image_name: imageName,
       },
       'note'
     ).then(noteId => noteId)
@@ -51,6 +65,20 @@ notesService = {
     }
 
     return noteId;
+  },
+  saveImage: async function(imageName, imageBase64) {
+    const matches = imageBase64.match(/^data:.+\/(.+);base64,(.*)$/);
+    const extention = matches[1];
+    const buffer = new Buffer.from(matches[2], 'base64');
+    const pathSaveImage = (__dirname + '/../assets/images/' + imageName);
+    return fs.writeFileSync(pathSaveImage, buffer, function (err) {
+      if (err) {
+        console.log(err);
+        return false;
+      }
+
+      return true;
+    });
   }
 };
 

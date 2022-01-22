@@ -41,6 +41,20 @@ function CreateNote() {
     });
   };
 
+  const handlerLoadImage = function(event) {
+    const reader = new FileReader();
+    const dInput = event.target;
+    const imageData = dInput.files[0];
+    reader.readAsDataURL(imageData);
+    reader.onload = () => (
+      setNoteData({
+        ...noteData,
+        [dInput.name]: reader.result,
+        imageName: imageData.name,
+      })
+    );
+  };
+
   return (
     <Fragment>
       <Header />
@@ -62,6 +76,11 @@ function CreateNote() {
           placeholder="Contenido"
           onChange={handlerChange}
         ></textarea>
+        <input
+          type="file"
+          name="image"
+          onChange={handlerLoadImage}
+        />
         <button className="button">
           Crear nota
         </button>

@@ -44,6 +44,13 @@ function Notes() {
                 {note.title} <span className="date">{note.createdDate}</span>
               </h2>
               <p className="content">{note.content}</p>
+              {
+                note.imageName &&
+                <img
+                  src={`${process.env.REACT_APP_URL_API}${process.env.REACT_APP_IMAGE_PATH_API}${note.imageName}`}
+                  alt={note.imageName}
+                />
+              }
               <hr className="separator"/>
             </div>
           ))
