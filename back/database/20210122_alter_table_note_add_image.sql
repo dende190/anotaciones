@@ -1,0 +1,1 @@
+ALTER TABLE note ADD image_name VARCHAR(255) NOT NULL DEFAULT '';
