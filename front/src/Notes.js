@@ -11,7 +11,6 @@ function Notes() {
 
   const [userNotes, setUserNotes] = useState({notes: []});
   const {userId} = useParams();
-  const redirectHome = useRef(null);
   useEffect(async () => {
     const userNotesData = await fetch(
       `${process.env.REACT_APP_URL_API}nota/obtener`,
@@ -29,7 +28,14 @@ function Notes() {
       window.location.href = '/iniciar_sesion';
     }
     setUserNotes(userNotesDataJson);
-    redirectHome.current.scrollIntoView({block: 'end', behavior: 'smooth'});
+    (
+      document
+      .querySelector(
+        '.jsNote_' +
+        (userNotesDataJson.notes.length - 1).toString()
+      )
+      .scrollIntoView({block: 'end', behavior: 'smooth'})
+    );
   }, []);
 
   return (
@@ -40,8 +46,8 @@ function Notes() {
         {
           !userNotes.notes.length ?
           <Loader /> :
-          userNotes.notes.map(note => (
-            <div key={note.id}>
+          userNotes.notes.map((note, index) => (
+            <div key={note.id} className={`jsNote_${index}`}>
               <h2 className="title">
                 {note.title} <span className="date">{note.createdDate}</span>
               </h2>
@@ -61,7 +67,7 @@ function Notes() {
           ))
         }
       </div>
-      <Link className="links return" ref={redirectHome} to="/">
+      <Link className="links return" to="/">
         Volver al Inicio
       </Link>
     </Fragment>
