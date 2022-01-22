@@ -34,7 +34,7 @@ function Notes() {
         '.jsNote_' +
         (userNotesDataJson.notes.length - 1).toString()
       )
-      .scrollIntoView({block: 'end', behavior: 'smooth'})
+      .scrollIntoView({behavior: 'smooth'})
     );
   }, []);
 
