@@ -46,10 +46,13 @@ function Notes() {
               <p className="content">{note.content}</p>
               {
                 note.imageName &&
-                <img
-                  src={`${process.env.REACT_APP_URL_API}${process.env.REACT_APP_IMAGE_PATH_API}${note.imageName}`}
-                  alt={note.imageName}
-                />
+                <div className="container_image_note">
+                  <img
+                    src={`${process.env.REACT_APP_URL_API}${process.env.REACT_APP_IMAGE_PATH_API}${note.imageName}`}
+                    className="image_note"
+                    alt={note.imageName}
+                  />
+                </div>
               }
               <hr className="separator"/>
             </div>

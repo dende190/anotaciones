@@ -17,3 +17,14 @@
 .separator {
   margin: 30px 0 50px;
 }
+
+.container_image_note {
+  text-align: center;
+}
+
+.image_note {
+  margin: 0 auto;
+  max-width: 600px;
+  height: auto;
+  object-fit: cover;
+}
