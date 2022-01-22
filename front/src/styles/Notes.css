@@ -28,3 +28,13 @@
   height: auto;
   object-fit: cover;
 }
+
+.links.return {
+  font-size: 30px;
+  display: block;
+  margin-bottom: 50px;
+}
+
+.links.return::before {
+  content: '<< ';
+}

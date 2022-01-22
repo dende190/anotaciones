@@ -1,5 +1,5 @@
-import {Fragment, useState, useEffect} from 'react';
-import {useParams} from 'react-router-dom';
+import {Fragment, useState, useEffect, useRef} from 'react';
+import {Link, useParams} from 'react-router-dom';
 import Header from './components/Header';
 import Loader from './components/Loader';
 import './styles/Notes.css'
@@ -11,6 +11,7 @@ function Notes() {
 
   const [userNotes, setUserNotes] = useState({notes: []});
   const {userId} = useParams();
+  const redirectHome = useRef(null);
   useEffect(async () => {
     const userNotesData = await fetch(
       `${process.env.REACT_APP_URL_API}nota/obtener`,
@@ -28,6 +29,7 @@ function Notes() {
       window.location.href = '/iniciar_sesion';
     }
     setUserNotes(userNotesDataJson);
+    redirectHome.current.scrollIntoView({block: 'end', behavior: 'smooth'});
   }, []);
 
   return (
@@ -59,6 +61,9 @@ function Notes() {
           ))
         }
       </div>
+      <Link className="links return" ref={redirectHome} to="/">
+        Volver al Inicio
+      </Link>
     </Fragment>
   );
 }
