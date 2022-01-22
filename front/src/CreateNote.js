@@ -76,11 +76,17 @@ function CreateNote() {
           placeholder="Contenido"
           onChange={handlerChange}
         ></textarea>
-        <input
-          type="file"
-          name="image"
-          onChange={handlerLoadImage}
-        />
+        <label>
+          <p className="label_text">
+            Agregar imagen a la nota:
+          </p>
+          <input
+            accept="image/*"
+            type="file"
+            name="image"
+            onChange={handlerLoadImage}
+          />
+        </label>
         <button className="button">
           Crear nota
         </button>
