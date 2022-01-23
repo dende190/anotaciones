@@ -40,5 +40,6 @@
   },
   "devDependencies": {
     "mini-css-extract-plugin": "2.4.5"
-  }
+  },
+  "homepage": "https://juanpisarnedis.com/"
 }
