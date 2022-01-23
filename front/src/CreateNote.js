@@ -16,14 +16,16 @@ function CreateNote() {
     event.preventDefault();
     errorMessage.current.hidden = true;
     setLoader(true);
+    let formData = new FormData();
+    formData.append('token', localStorage.token)
+    for (let data in noteData) {
+      formData.append(data, noteData[data])
+    }
     const noteResponse = await fetch(
       `${process.env.REACT_APP_URL_API}nota/crear`,
       {
         method: 'post',
-        body: JSON.stringify({noteData, token: localStorage.token}),
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        body: formData,
       }
     ).catch(err => manageError);
 
@@ -62,17 +64,11 @@ function CreateNote() {
   };
 
   const handlerLoadImage = function(event) {
-    const reader = new FileReader();
     const dInput = event.target;
-    const imageData = dInput.files[0];
-    reader.readAsDataURL(imageData);
-    reader.onload = () => (
-      setNoteData({
-        ...noteData,
-        [dInput.name]: reader.result,
-        imageName: imageData.name,
-      })
-    );
+    setNoteData({
+      ...noteData,
+      [dInput.name]: dInput.files[0],
+    });
   };
 
   return (

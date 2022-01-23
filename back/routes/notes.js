@@ -1,6 +1,44 @@
 const express = require('express');
 const notesService = require('../services/notes');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, 'assets/images')
+  },
+  filename: function (req, file, callback) {
+    const date = new Date();
+    const today = (
+      date.getFullYear() +
+      '-' +
+      (
+        date.getMonth() > 10 ?
+        (date.getMonth() + 1) :
+        ('0' + (date.getMonth() + 1))
+      ) +
+      '-' +
+      date.getDate() +
+      '-' +
+      date.getHours() +
+      '-' +
+      date.getMinutes() +
+      '-' +
+      date.getSeconds()
+    );
+    const fileName = file.originalname.match(/^(.+)(\.\w{3,4})$/)[1]
+    callback(
+      null,
+      (
+        fileName +
+        '-' +
+        today +
+        '.' +
+        file.mimetype.split('/')[1]
+      )
+    );
+  }
+})
+const upload = multer({ storage: storage })
 
 function notesRoute(app) {
   const router = express.Router();
@@ -21,7 +59,7 @@ function notesRoute(app) {
     res.status(200).json({notes, userName: notes[0].userName});
   });
 
-  router.post('/crear', async (req, res, next) => {
+  router.post('/crear', upload.single('image'), async (req, res, next) => {
     if (!req.body.token) {
       res.status(301).json({error: true});
       return;
@@ -29,8 +67,13 @@ function notesRoute(app) {
 
     const userData = jwt.decode(req.body.token);
     const userId = userData.id;
-    const noteData = req.body.noteData;
+    const noteData = req.body;
     let noteId = 0;
+    let imageName = '';
+    if (req.file) {
+      imageName = req.file.filename
+    }
+
     try {
       noteId = await (
         notesService
@@ -38,8 +81,7 @@ function notesRoute(app) {
           userId,
           noteData.title,
           noteData.content,
-          noteData.imageName,
-          noteData.image
+          imageName
         )
       );
     } catch (error) {

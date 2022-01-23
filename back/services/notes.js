@@ -38,15 +38,10 @@ notesService = {
     userId,
     title,
     content,
-    imageName,
-    imageBase64 = null
+    imageName
   ) {
     if (!userId || !title || !content) {
       return 0;
-    }
-
-    if (imageBase64) {
-      await this.saveImage(imageName, imageBase64)
     }
 
     const noteId = await mysqlLib.insert(
@@ -61,20 +56,6 @@ notesService = {
     .catch(err => console.log(err));
 
     return (noteId || 0);
-  },
-  saveImage: async function(imageName, imageBase64) {
-    const matches = imageBase64.match(/^data:.+\/(.+);base64,(.*)$/);
-    const extention = matches[1];
-    const buffer = new Buffer.from(matches[2], 'base64');
-    const pathSaveImage = (__dirname + '/../assets/images/' + imageName);
-    return fs.writeFileSync(pathSaveImage, buffer, function (err) {
-      if (err) {
-        console.log(err);
-        return false;
-      }
-
-      return true;
-    });
   }
 };
 

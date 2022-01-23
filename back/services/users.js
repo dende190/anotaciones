@@ -9,8 +9,10 @@ usersService = {
       (
         date.getMonth() > 10 ?
         (date.getMonth() + 1) :
-        '0' + (date.getMonth() + 1)) +
-      '-' + date.getDate()
+        ('0' + (date.getMonth() + 1))
+      ) +
+      '-' +
+      date.getDate()
     );
     const users = await mysqlLib.get(
       (
