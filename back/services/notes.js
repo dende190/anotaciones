@@ -38,14 +38,14 @@ notesService = {
     userId,
     title,
     content,
-    imageName = '',
+    imageName,
     imageBase64 = null
   ) {
     if (!userId || !title || !content) {
       return 0;
     }
 
-    if (imageName && imageBase64) {
+    if (imageBase64) {
       await this.saveImage(imageName, imageBase64)
     }
 
