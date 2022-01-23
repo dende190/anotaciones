@@ -1,5 +1,6 @@
 import {Fragment, useState, useEffect} from 'react';
 import {Link, useParams} from 'react-router-dom';
+import parse from 'html-react-parser';
 import Header from './components/Header';
 import Loader from './components/Loader';
 import './styles/Notes.css'
@@ -49,9 +50,23 @@ function Notes() {
           userNotes.notes.map((note, index) => (
             <div key={note.id} className={`jsNote_${index}`}>
               <h2 className="title">
-                {note.title} <span className="date">{note.createdDate}</span>
+                {note.title}
+                <span className="date">
+                  {note.createdDate}
+                </span>
               </h2>
-              <p className="content">{note.content}</p>
+              <p className="content">
+                {
+                  parse(
+                    note
+                    .content
+                    .replace(
+                      /((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))/g,
+                      '<a href="$1" target="_blank">$1</a>'
+                    )
+                  )
+                }
+              </p>
               {
                 note.imageName &&
                 <div className="container_image_note">
