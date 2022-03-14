@@ -29,14 +29,6 @@ function Notes() {
       window.location.href = '/iniciar_sesion';
     }
     setUserNotes(userNotesDataJson);
-    (
-      document
-      .querySelector(
-        '.jsNote_' +
-        (userNotesDataJson.notes.length - 1).toString()
-      )
-      .scrollIntoView({behavior: 'smooth'})
-    );
   }, []);
 
   return (
@@ -48,7 +40,7 @@ function Notes() {
           !userNotes.notes.length ?
           <Loader /> :
           userNotes.notes.map((note, index) => (
-            <div key={note.id} className={`jsNote_${index}`}>
+            <div key={note.id}>
               <h2 className="title">
                 {note.title}
                 <span className="date">

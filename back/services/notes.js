@@ -26,7 +26,9 @@ notesService = {
           'n.status = 1 AND ' +
           'n.public = 1 AND ' +
           'n.user_id = ? AND ' +
-          'u.status = 1'
+          'u.status = 1 ' +
+        'ORDER BY n.id DESC'
+
       ),
       [userId]
     ).then(notesResult => notesResult)
