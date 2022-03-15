@@ -142,13 +142,13 @@ mysqlLib = {
       );
     });
   },
-  updateWithId: function(values, id, table) {
+  update: function(set, setParam, where, whereParam, table) {
     return new Promise((resolve, reject) => {
       this.connection.query(
-        `UPDATE ${table} SET ? WHERE id = ?`,
+        `UPDATE ${table} SET ${set} WHERE ${where}`,
         [
-          values,
-          id,
+          setParam,
+          whereParam,
         ],
         (err, result) => {
           if (err) {
