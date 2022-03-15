@@ -7,32 +7,44 @@ notesService = {
       return [];
     }
     const pathImage = (__dirname + '/../assets/images/');
-    const notes = await mysqlLib.get(
-      (
-        'SELECT ' +
-          'CONCAT(' +
-            'COALESCE(u.firstname, ""), ' +
-            '" ", ' +
-            'COALESCE(u.lastname, "")' +
-          ') userName, ' +
-          'DATE_FORMAT(n.created_on, "%Y-%m-%d") createdDate, ' +
-          'n.id, ' +
-          'n.title, ' +
-          'n.content, ' +
-          'n.image_name imageName ' +
-        'FROM note n ' +
-        'JOIN user u ON u.id = n.user_id ' +
-        'WHERE ' +
-          'n.status = 1 AND ' +
-          'n.public = 1 AND ' +
-          'n.user_id = ? AND ' +
-          'u.status = 1 ' +
-        'ORDER BY n.id DESC'
-
-      ),
-      [userId]
-    ).then(notesResult => notesResult)
-    .catch(err => console.log(err));
+    const notes = await (
+      mysqlLib
+      .select(
+        [
+          (
+            'CONCAT(' +
+              'COALESCE(u.firstname, ""), ' +
+              '" ", ' +
+              'COALESCE(u.lastname, "")' +
+            ') userName'
+          ),
+          'DATE_FORMAT(n.created_on, "%Y-%m-%d") createdDate',
+          'n.id',
+          'n.title',
+          'n.content',
+          'n.image_name imageName',
+        ],
+        [
+          'note n',
+          'JOIN user u ON u.id = n.user_id',
+        ],
+        [
+          ['n.status', 1],
+          'AND',
+          ['n.public', 1],
+          'AND',
+          ['n.user_id', '?'],
+          'AND',
+          ['u.status', 1],
+        ],
+        [userId],
+        [
+          'ORDER BY n.id DESC',
+        ]
+      )
+      .then(notesResult => notesResult)
+      .catch(err => console.log(err))
+    );
 
     return notes;
   },

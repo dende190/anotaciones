@@ -8,20 +8,22 @@ loginService = {
       return {};
     }
 
-    const user = await mysqlLib.getRow(
-      (
-        'SELECT ' +
-          'id, ' +
-          'email, ' +
-          'password, ' +
-          'CONCAT(COALESCE(firstname, ""), " ", COALESCE(lastname, "")) name ' +
-        'FROM user ' +
-        'WHERE ' +
-          'email = ? AND ' +
-          'status = 1'
-      ),
+    const user = await mysqlLib.selectRow(
+      [
+        'id',
+        'email',
+        'password',
+        'CONCAT(COALESCE(firstname, ""), " ", COALESCE(lastname, "")) name',
+      ],
+      ['user'],
+      [
+        ['email', '?'],
+        'AND',
+        ['status', 1]
+      ],
       [email]
-    ).then(userResult => userResult)
+    )
+    .then(userResult => userResult)
     .catch(err => console.log(err));
 
     if (!user) {

@@ -19,27 +19,113 @@ mysqlLib = {
       database: NAME,
     });
   },
-  get: function(query, params = []) {
+  query: function(query, params = [], row = false) {
     return new Promise((resolve, reject) => {
       this.connection.query(query, params, (err, results) => {
         if (err) {
           return reject(err);
+        }
+
+        if (row) {
+          return resolve(results[0]);
         }
 
         resolve(results);
       });
     });
   },
-  getRow: function(query, params = []) {
-    return new Promise((resolve, reject) => {
-      this.connection.query(query, params, (err, results) => {
-        if (err) {
-          return reject(err);
+  contructSelect: function(
+    columns,
+    form,
+    wheres = [],
+    others = []
+  ) {
+    let query = 'SELECT ';
+    columns.forEach((column, index) => {
+      query += (
+        column +
+        (
+          index !== (columns.length - 1) ?
+          ',' :
+          ''
+        ) +
+        ' '
+      );
+    });
+
+    query += 'FROM ';
+    form.forEach(value => {
+      query += (value + ' ');
+    });
+
+    if (wheres.length) {
+      query += 'WHERE ';
+      wheres.forEach(where => {
+        if (!Array.isArray(where)) {
+          query += (where.toUpperCase() + ' ');
+          return;
         }
 
-        resolve(results[0]);
+        const condition2 = where[1];
+        if (Array.isArray(condition2)) {
+          query += (where[0] + ' IN (');
+          condition2.forEach((value, index) => {
+            query += (
+              value +
+              (
+                index !== (condition2.length - 1) ?
+                ',' :
+                ''
+              ) +
+              ' '
+            );
+          });
+          query += ') ';
+          return;
+        }
+
+        let operator = (where[2] || ' = ');
+        query += (where[0] + operator + condition2 + ' ');
       });
-    });
+    }
+
+    if (others.length) {
+      others.forEach(other => {
+        query += (other + ' ');
+      });
+    }
+
+    return query;
+  },
+  select: function(
+    columns,
+    form,
+    wheres = [],
+    params = [],
+    others = []
+  ) {
+    const query = this.contructSelect(
+      columns,
+      form,
+      wheres,
+      others
+    );
+    return this.query(query, params);
+  },
+  selectRow: function(
+    columns,
+    form,
+    wheres = [],
+    params = [],
+    others = []
+  ) {
+    const query = this.contructSelect(
+      columns,
+      form,
+      wheres,
+      others
+    );
+    return this.query(query, params, true);
   },
   insert: function(values, table) {
     return new Promise((resolve, reject) => {
