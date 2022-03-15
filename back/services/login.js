@@ -42,6 +42,7 @@ loginService = {
     };
   },
   registrate: async function(userData) {
+    return;
     if (
       !userData.firstname ||
       !userData.lastname ||
