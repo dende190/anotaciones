@@ -69,7 +69,77 @@ notesService = {
     ).then(noteId => noteId)
     .catch(err => console.log(err));
 
+    const noteAutosaveId = await this.getAutosaveId(userId);
+    if (noteAutosaveId) {
+      this.updateAutosave(noteAutosaveId);
+    }
+
     return (noteId || 0);
+  },
+  getAutosaveId: async function(userId) {
+    const noteAutosave = await (
+      mysqlLib
+      .selectRow(
+        ['id'],
+        ['note_autosave'],
+        [
+          ['user_id', '?']
+        ],
+        [userId]
+      )
+      .then(noteAutosave => noteAutosave)
+      .catch(err => console.log(err))
+    );
+
+    return (noteAutosave ? noteAutosave.id : 0);
+  },
+  getAutosave: async function(userId) {
+    const noteAutosave = await (
+      mysqlLib
+      .selectRow(
+        ['content'],
+        ['note_autosave'],
+        [
+          ['user_id', '?']
+        ],
+        [userId]
+      )
+      .then(noteAutosave => noteAutosave)
+      .catch(err => console.log(err))
+    );
+
+    return (noteAutosave ? noteAutosave.content : '');
+  },
+  createAutosave: async function(userId, content) {
+    if (!userId || !content) {
+      return;
+    }
+
+    const noteAutosaveId = await this.getAutosaveId(userId);
+    if (noteAutosaveId) {
+      this.updateAutosave(noteAutosaveId, content);
+      return;
+    }
+
+    await mysqlLib.insert(
+      {
+        user_id: userId,
+        content: content,
+      },
+      'note_autosave'
+    );
+  },
+  updateAutosave: async function(noteAutosaveId, content = '') {
+    if (!noteAutosaveId) {
+      return;
+    }
+    await mysqlLib.update(
+      'content = ?',
+      content,
+      'id = ?',
+      noteAutosaveId,
+      'note_autosave'
+    );
   }
 };
 

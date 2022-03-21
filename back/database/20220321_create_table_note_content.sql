@@ -1,0 +1,7 @@
+CREATE TABLE note_autosave(
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT(10) UNSIGNED NOT NULL UNIQUE,
+  `content` TEXT NOT NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY (user_id) REFERENCES user(id)
+);

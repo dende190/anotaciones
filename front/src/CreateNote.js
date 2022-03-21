@@ -9,9 +9,47 @@ function CreateNote() {
     window.location.href = '/iniciar_sesion';
   }
 
-  const [noteData, setNoteData] = useState({});
+  const [noteData, setNoteData] = useState({
+    title: '',
+    content: '',
+  });
   const [loader, setLoader] = useState(false);
   const errorMessage = useRef(null);
+  useEffect(async () => {
+    const noteContent = await fetch(
+      `${process.env.REACT_APP_URL_API}nota/obtener_auto_guardado`,
+      {
+        method: 'post',
+        body: JSON.stringify({token: localStorage.token}),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }
+    );
+
+    const noteContentJson = await noteContent.json();
+    console.log(noteContentJson);
+    if (noteContentJson) {
+      setNoteData({...noteData, content: noteContentJson})
+    }
+  }, []);
+
+  const saveContent = async function() {
+    await fetch(
+      `${process.env.REACT_APP_URL_API}nota/auto_guardar`,
+      {
+        method: 'post',
+        body: JSON.stringify({
+          token: localStorage.token,
+          content: noteData.content
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }
+    );
+  };
+
   const handlerSubmit = async function(event) {
     event.preventDefault();
     errorMessage.current.hidden = true;
@@ -61,6 +99,10 @@ function CreateNote() {
       ...noteData,
       [dInput.name]: dInput.value,
     });
+
+    if (dInput.dataset.autosave && !(dInput.value.length % 100)) {
+      saveContent();
+    }
   };
 
   const handlerLoadImage = function(event) {
@@ -90,7 +132,9 @@ function CreateNote() {
           className="textarea"
           required="required"
           placeholder="Contenido"
+          data-autosave="1"
           onChange={handlerChange}
+          value={noteData.content}
         ></textarea>
         <label>
           <p className="label_text">

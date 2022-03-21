@@ -97,6 +97,29 @@ function notesRoute(app) {
 
     res.status(200).json({userId: userId});
   });
+
+  router.post('/obtener_auto_guardado', async (req, res, next) => {
+    if (!req.body.token) {
+      res.status(301).json({error: true});
+      return;
+    }
+
+    const userData = jwt.decode(req.body.token);
+    const content = await notesService.getAutosave(userData.id);
+    console.log(content);
+    res.status(200).json(content);
+  });
+
+  router.post('/auto_guardar', async (req, res, next) => {
+    if (!req.body.token) {
+      res.status(301).json({error: true});
+      return;
+    }
+
+    const userData = jwt.decode(req.body.token);
+    await notesService.createAutosave(userData.id, req.body.content);
+    res.status(200);
+  });
 }
 
 module.exports = notesRoute;
