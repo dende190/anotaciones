@@ -11,7 +11,10 @@ const notesRoute = require('./routes/notes');
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+  origin: config.cors,
+  optionsSuccessStatus: 200,
+}));
 app.use('/images', express.static(__dirname + '/assets/images'));
 
 //Routes
