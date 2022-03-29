@@ -12,6 +12,7 @@ function CreateNote() {
   const [noteData, setNoteData] = useState({
     title: '',
     content: '',
+    public: true,
   });
   const [loader, setLoader] = useState(false);
   const errorMessage = useRef(null);
@@ -28,7 +29,6 @@ function CreateNote() {
     );
 
     const noteContentJson = await noteContent.json();
-    console.log(noteContentJson);
     if (noteContentJson) {
       setNoteData({...noteData, content: noteContentJson})
     }
@@ -113,11 +113,28 @@ function CreateNote() {
     });
   };
 
+  const handlerChangePublic = function(event) {
+    setNoteData({
+      ...noteData,
+      public: event.target.checked,
+    });
+  };
+
   return (
     <Fragment>
       <Header />
       <h1>Crea una nueva nota:</h1>
       <form method="post" className="form_note" onSubmit={handlerSubmit}>
+        <label className="checkbox_container">
+          <input
+            type="checkbox"
+            name="public"
+            className="input checkbox"
+            onChange={handlerChangePublic}
+            defaultChecked={noteData.public}
+          />
+          Nota Publica
+        </label>
         <input
           type="text"
           name="title"

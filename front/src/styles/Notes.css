@@ -38,3 +38,13 @@
 .links.return::before {
   content: '<< ';
 }
+
+.checkbox_container {
+  margin-left: 16px;
+  width: initial;
+}
+
+.title_container {
+  display: flex;
+  justify-content: center;
+}

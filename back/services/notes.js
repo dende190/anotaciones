@@ -2,10 +2,15 @@ const mysqlLib = require('../lib/mysql');
 const fs = require('fs');
 
 notesService = {
-  getOfUser: async function(userId) {
+  getOfUser: async function(userId, userLogged = false) {
     if (!userId) {
       return [];
     }
+    let publicStatus = [1];
+    if (userLogged) {
+      publicStatus = [0, 1];
+    }
+
     const pathImage = (__dirname + '/../assets/images/');
     const notes = await (
       mysqlLib
@@ -23,6 +28,7 @@ notesService = {
           'n.title',
           'n.content',
           'n.image_name imageName',
+          'n.public',
         ],
         [
           'note n',
@@ -31,7 +37,7 @@ notesService = {
         [
           ['n.status', 1],
           'AND',
-          ['n.public', 1],
+          ['n.public', publicStatus],
           'AND',
           ['n.user_id', '?'],
           'AND',
@@ -52,7 +58,8 @@ notesService = {
     userId,
     title,
     content,
-    imageName
+    public,
+    imageName = ''
   ) {
     if (!userId || !title || !content) {
       return 0;
@@ -64,6 +71,7 @@ notesService = {
         content: content,
         user_id: userId,
         image_name: imageName,
+        public: (public === true || public === "true" ? 1 : 0),
       },
       'note'
     ).then(noteId => noteId)
@@ -139,6 +147,19 @@ notesService = {
       'id = ?',
       noteAutosaveId,
       'note_autosave'
+    );
+  },
+  changePrivacy: async function(noteId, public) {
+    if (!noteId) {
+      return;
+    }
+
+    await mysqlLib.update(
+      'public = ?',
+      public,
+      'id = ?',
+      noteId,
+      'note'
     );
   }
 };

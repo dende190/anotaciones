@@ -50,13 +50,15 @@ function notesRoute(app) {
       return;
     }
 
-    const notes = await notesService.getOfUser(req.body.userId);
+    const userData = jwt.decode(req.body.token);
+    const userLogged = parseInt(req.body.userId) === parseInt(userData.id);
+    const notes = await notesService.getOfUser(req.body.userId, userLogged);
     if (!notes.length) {
       res.status(201).json({notes: []});
       return;
     }
 
-    res.status(200).json({notes, userName: notes[0].userName});
+    res.status(200).json({notes, userName: notes[0].userName, userLogged});
   });
 
   router.post('/crear', upload.single('image'), async (req, res, next) => {
@@ -81,11 +83,12 @@ function notesRoute(app) {
           userId,
           noteData.title,
           noteData.content,
+          noteData.public,
           imageName
         )
       );
     } catch (error) {
-      return res.status(400).send({
+      return res.status(400).json({
          message: error,
       });
     }
@@ -106,7 +109,6 @@ function notesRoute(app) {
 
     const userData = jwt.decode(req.body.token);
     const content = await notesService.getAutosave(userData.id);
-    console.log(content);
     res.status(200).json(content);
   });
 
@@ -118,7 +120,23 @@ function notesRoute(app) {
 
     const userData = jwt.decode(req.body.token);
     await notesService.createAutosave(userData.id, req.body.content);
-    res.status(200);
+    res.status(200).json();
+  });
+
+  router.post('/cambiar_privacidad', async (req, res, next) => {
+    if (!req.body.token) {
+      res.status(301).json({error: true});
+      return;
+    }
+
+    const userData = jwt.decode(req.body.token);
+    const noteData = req.body;
+    if (parseInt(userData.id) !== parseInt(noteData.userId)) {
+      res.status(301).json();
+      return;
+    }
+    await notesService.changePrivacy(noteData.noteId, noteData.public);
+    res.status(200).json();
   });
 }
 

@@ -31,6 +31,28 @@ function Notes() {
     setUserNotes(userNotesDataJson);
   }, []);
 
+  const hanlderChangePublic = async (event) => {
+    const dCheckbox = event.target;
+    const privacyChange = await fetch(
+      `${process.env.REACT_APP_URL_API}nota/cambiar_privacidad`,
+      {
+        method: 'post',
+        body: (
+          JSON
+          .stringify({
+            token: localStorage.token,
+            noteId: dCheckbox.dataset.noteId,
+            public: dCheckbox.checked,
+            userId,
+          })
+        ),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }
+    );
+  };
+
   return (
     <Fragment>
       <Header />
@@ -41,12 +63,28 @@ function Notes() {
           <Loader /> :
           userNotes.notes.map((note, index) => (
             <div key={note.id}>
-              <h2 className="title">
-                {note.title}
-                <span className="date">
-                  {note.createdDate}
-                </span>
-              </h2>
+              <div className="title_container">
+                <h2 className="title">
+                  {note.title}
+                  <span className="date">
+                    {note.createdDate}
+                  </span>
+                </h2>
+                {
+                  userNotes.userLogged &&
+                  <label className="checkbox_container">
+                    <input
+                      type="checkbox"
+                      name="public"
+                      className="input checkbox"
+                      defaultChecked={note.public}
+                      onChange={hanlderChangePublic}
+                      data-note-id={note.id}
+                    />
+                    Nota Publica
+                  </label>
+                }
+              </div>
               <p className="content">
                 {
                   parse(
