@@ -32,6 +32,7 @@ usersService = {
           'LEFT JOIN ' +
             'note n ON ' +
             'n.user_id = u.id AND ' +
+            'n.public = 1 AND ' +
             'n.created_on > ? AND ' +
             'n.created_on < ? '
         )
